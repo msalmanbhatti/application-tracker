@@ -17,7 +17,7 @@ import Link from "next/link";
 import { GripVertical, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";import { updateStatus } from "./actions";
 import { DeleteButton, StatusSelect } from "./application-controls";
-
+import { Input } from "@/components/ui/input";
 
 export type Application = {
   id: string;
@@ -40,6 +40,7 @@ export function KanbanBoard({ applications }: { applications: Application[] }) {
   const dndId = useId();
   const [items, setItems] = useState(applications);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
   const [, startTransition] = useTransition();
 
   // When the server sends fresh data (e.g. after adding an application),
@@ -52,6 +53,16 @@ export function KanbanBoard({ applications }: { applications: Application[] }) {
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
   const activeApp = items.find((app) => app.id === activeId) ?? null;
+
+    // Only show cards whose company or role contains the search text
+  const search = query.trim().toLowerCase();
+  const visibleItems = search
+    ? items.filter(
+        (app) =>
+          app.company.toLowerCase().includes(search) ||
+          app.role.toLowerCase().includes(search),
+      )
+    : items;
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(String(event.active.id));
@@ -85,13 +96,29 @@ export function KanbanBoard({ applications }: { applications: Application[] }) {
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
     >
+           <div className="mb-4 flex flex-wrap items-center gap-3">
+        <Input
+          type="search"
+          placeholder="Search by company or role"
+          aria-label="Search applications"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="max-w-sm"
+        />
+        {search && (
+          <p className="text-sm text-muted-foreground">
+            {visibleItems.length} of {items.length} applications
+          </p>
+        )}
+      </div>
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {COLUMNS.map((column) => (
           <Column
             key={column.id}
             id={column.id}
             title={column.title}
-            applications={items.filter((a) => a.status === column.id)}
+            applications={visibleItems.filter((a) => a.status === column.id)}
           />
         ))}
       </div>
