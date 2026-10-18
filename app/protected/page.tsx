@@ -1,6 +1,10 @@
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
+import { addApplication } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Application = {
   id: string;
@@ -10,6 +14,50 @@ type Application = {
   applied_on: string | null;
   job_url: string | null;
 };
+
+function AddApplicationForm() {
+  return (
+    <form
+      action={addApplication}
+      className="rounded-lg border p-4 grid gap-4 sm:grid-cols-2"
+    >
+      <div className="grid gap-2">
+        <Label htmlFor="company">Company</Label>
+        <Input id="company" name="company" placeholder="e.g. SAP" required />
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="role">Role</Label>
+        <Input id="role" name="role" placeholder="e.g. Frontend Intern" required />
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="job_url">Job link (optional)</Label>
+        <Input id="job_url" name="job_url" type="url" placeholder="https://..." />
+      </div>
+
+      <div className="grid gap-2">
+        <Label htmlFor="status">Status</Label>
+        <select
+          id="status"
+          name="status"
+          defaultValue="wishlist"
+          className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+        >
+          <option value="wishlist">Wishlist</option>
+          <option value="applied">Applied</option>
+          <option value="interview">Interview</option>
+          <option value="offer">Offer</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <Button type="submit" className="sm:col-span-2 sm:justify-self-start">
+        Add application
+      </Button>
+    </form>
+  );
+}
 
 async function ApplicationsList() {
   const supabase = await createClient();
@@ -72,6 +120,7 @@ export default function ProtectedPage() {
           Track every internship application in one place.
         </p>
       </div>
+      <AddApplicationForm />
       <Suspense
         fallback={<p className="text-muted-foreground">Loading applications…</p>}
       >
