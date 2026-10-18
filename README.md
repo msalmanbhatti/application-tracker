@@ -14,7 +14,8 @@ As a Media Informatics student looking for a mandatory internship, I needed one 
 
 - Sign up and log in with email (Supabase Auth)
 - Add applications with company, role, job link and status
-- Change status (Wishlist → Applied → Interview → Offer / Rejected) or delete applications
+- Kanban board with drag and drop (dnd-kit) to move applications between Wishlist, Applied, Interview, Offer and Rejected
+- Status dropdown on every card as a keyboard-friendly alternative to dragging
 - Each user sees only their own data, enforced in the database with Row Level Security
 - Clear empty, loading and error states
 - Responsive layout with light and dark mode
@@ -57,7 +58,7 @@ As a Media Informatics student looking for a mandatory internship, I needed one 
 
 ## Roadmap
 
-- [ ] Kanban board with drag and drop
+- [x] Kanban board with drag and drop
 - [ ] Search and filter
 - [ ] Statistics (applications per week, response rate)
 - [ ] AI-assisted matching of my CV against job descriptions
