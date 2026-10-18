@@ -96,7 +96,7 @@ export function KanbanBoard({ applications }: { applications: Application[] }) {
       onDragEnd={handleDragEnd}
       onDragCancel={() => setActiveId(null)}
     >
-           <div className="mb-4 flex flex-wrap items-center gap-3">
+           <div className="flex flex-wrap items-center gap-3">
         <Input
           type="search"
           placeholder="Search by company or role"
