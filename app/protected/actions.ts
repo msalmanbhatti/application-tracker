@@ -1,5 +1,5 @@
 "use server";
-
+import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
@@ -45,4 +45,33 @@ export async function deleteApplication(id: string) {
 
   if (error) throw new Error(error.message);
   revalidatePath("/protected");
+}
+
+export async function updateApplication(id: string, formData: FormData) {
+  const company = String(formData.get("company") ?? "").trim();
+  const role = String(formData.get("role") ?? "").trim();
+  const jobUrl = String(formData.get("job_url") ?? "").trim();
+  const status = String(formData.get("status") ?? "");
+  const appliedOn = String(formData.get("applied_on") ?? "");
+  const notes = String(formData.get("notes") ?? "").trim();
+
+  if (!company || !role || !STATUSES.includes(status)) return;
+
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("applications")
+    .update({
+      company,
+      role,
+      job_url: jobUrl || null,
+      status,
+      applied_on: appliedOn || null,
+      notes: notes || null,
+    })
+    .eq("id", id);
+
+  if (error) throw new Error(error.message);
+
+  revalidatePath("/protected");
+  redirect("/protected"); // go back to the board after saving
 }

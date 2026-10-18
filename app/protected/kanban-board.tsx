@@ -13,9 +13,11 @@ import {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-import { GripVertical } from "lucide-react";
-import { updateStatus } from "./actions";
+import Link from "next/link";
+import { GripVertical, Pencil } from "lucide-react";
+import { Button } from "@/components/ui/button";import { updateStatus } from "./actions";
 import { DeleteButton, StatusSelect } from "./application-controls";
+
 
 export type Application = {
   id: string;
@@ -190,9 +192,19 @@ function CardContent({
           <p className="text-xs text-muted-foreground truncate">{app.role}</p>
         </div>
       </div>
-      <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center justify-between gap-2">
         <StatusSelect id={app.id} status={app.status} />
-        <DeleteButton id={app.id} company={app.company} />
+        <div className="flex items-center">
+          <Button asChild variant="ghost" size="icon">
+            <Link
+              href={`/protected/applications/${app.id}`}
+              aria-label={`Edit application at ${app.company}`}
+            >
+              <Pencil size={16} />
+            </Link>
+          </Button>
+          <DeleteButton id={app.id} company={app.company} />
+        </div>
       </div>
     </div>
   );
