@@ -2,25 +2,16 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { addApplication } from "./actions";
+import { KanbanBoard, type Application } from "./kanban-board";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { StatusSelect, DeleteButton } from "./application-controls";
-
-type Application = {
-  id: string;
-  company: string;
-  role: string;
-  status: string;
-  applied_on: string | null;
-  job_url: string | null;
-};
 
 function AddApplicationForm() {
   return (
     <form
       action={addApplication}
-      className="rounded-lg border p-4 grid gap-4 sm:grid-cols-2"
+      className="rounded-lg border p-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
     >
       <div className="grid gap-2">
         <Label htmlFor="company">Company</Label>
@@ -53,14 +44,17 @@ function AddApplicationForm() {
         </select>
       </div>
 
-      <Button type="submit" className="sm:col-span-2 sm:justify-self-start">
+      <Button
+        type="submit"
+        className="sm:col-span-2 lg:col-span-4 sm:justify-self-start"
+      >
         Add application
       </Button>
     </form>
   );
 }
 
-async function ApplicationsList() {
+async function ApplicationsBoard() {
   const supabase = await createClient();
 
   // 1. Make sure someone is logged in
@@ -75,42 +69,14 @@ async function ApplicationsList() {
     .select("id, company, role, status, applied_on, job_url")
     .order("created_at", { ascending: false });
 
-  // 3. Handle the three possible situations: error, empty, or data
+  // 3. Show an error if loading failed, otherwise the board
   if (error) {
     return (
       <p className="text-red-600">Could not load applications: {error.message}</p>
     );
   }
 
-  const applications = (data ?? []) as Application[];
-
-  if (applications.length === 0) {
-    return (
-      <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
-        No applications yet. Add your first one to get started.
-      </div>
-    );
-  }
-
-  return (
-    <ul className="flex flex-col gap-3">
-      {applications.map((app) => (
-        <li
-          key={app.id}
-          className="rounded-lg border p-4 flex items-center justify-between gap-4"
-        >
-          <div>
-            <p className="font-semibold">{app.company}</p>
-            <p className="text-sm text-muted-foreground">{app.role}</p>
-          </div>
-                    <div className="flex items-center gap-2">
-            <StatusSelect id={app.id} status={app.status} />
-            <DeleteButton id={app.id} company={app.company} />
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
+  return <KanbanBoard applications={(data ?? []) as Application[]} />;
 }
 
 export default function ProtectedPage() {
@@ -119,14 +85,14 @@ export default function ProtectedPage() {
       <div>
         <h1 className="font-bold text-3xl">My applications</h1>
         <p className="text-muted-foreground">
-          Track every internship application in one place.
+          Drag cards between columns to update their status.
         </p>
       </div>
       <AddApplicationForm />
       <Suspense
         fallback={<p className="text-muted-foreground">Loading applications…</p>}
       >
-        <ApplicationsList />
+        <ApplicationsBoard />
       </Suspense>
     </div>
   );

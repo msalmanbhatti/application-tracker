@@ -8,7 +8,7 @@ export default function ProtectedLayout({
   return (
     <main className="min-h-screen flex flex-col items-center">
       <SiteHeader />
-      <div className="flex-1 w-full max-w-3xl flex flex-col gap-8 p-5 py-12">
+      <div className="flex-1 w-full max-w-6xl flex flex-col gap-8 p-5 py-12">
         {children}
       </div>
       <SiteFooter />
