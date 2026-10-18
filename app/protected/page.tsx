@@ -1,43 +1,82 @@
 import { redirect } from "next/navigation";
-
-import { createClient } from "@/lib/supabase/server";
-import { InfoIcon } from "lucide-react";
-import { FetchDataSteps } from "@/components/tutorial/fetch-data-steps";
 import { Suspense } from "react";
+import { createClient } from "@/lib/supabase/server";
 
-async function UserDetails() {
+type Application = {
+  id: string;
+  company: string;
+  role: string;
+  status: string;
+  applied_on: string | null;
+  job_url: string | null;
+};
+
+async function ApplicationsList() {
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
 
-  if (error || !data?.claims) {
+  // 1. Make sure someone is logged in
+  const { data: claimsData, error: authError } = await supabase.auth.getClaims();
+  if (authError || !claimsData?.claims) {
     redirect("/auth/login");
   }
 
-  return JSON.stringify(data.claims, null, 2);
+  // 2. Load this user's applications, newest first
+  const { data, error } = await supabase
+    .from("applications")
+    .select("id, company, role, status, applied_on, job_url")
+    .order("created_at", { ascending: false });
+
+  // 3. Handle the three possible situations: error, empty, or data
+  if (error) {
+    return (
+      <p className="text-red-600">Could not load applications: {error.message}</p>
+    );
+  }
+
+  const applications = (data ?? []) as Application[];
+
+  if (applications.length === 0) {
+    return (
+      <div className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+        No applications yet. Add your first one to get started.
+      </div>
+    );
+  }
+
+  return (
+    <ul className="flex flex-col gap-3">
+      {applications.map((app) => (
+        <li
+          key={app.id}
+          className="rounded-lg border p-4 flex items-center justify-between gap-4"
+        >
+          <div>
+            <p className="font-semibold">{app.company}</p>
+            <p className="text-sm text-muted-foreground">{app.role}</p>
+          </div>
+          <span className="text-xs rounded-full border px-3 py-1 capitalize">
+            {app.status}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default function ProtectedPage() {
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          <Suspense>
-            <UserDetails />
-          </Suspense>
-        </pre>
-      </div>
+    <div className="flex-1 w-full flex flex-col gap-8">
       <div>
-        <h2 className="font-bold text-2xl mb-4">Next steps</h2>
-        <FetchDataSteps />
+        <h1 className="font-bold text-3xl">My applications</h1>
+        <p className="text-muted-foreground">
+          Track every internship application in one place.
+        </p>
       </div>
+      <Suspense
+        fallback={<p className="text-muted-foreground">Loading applications…</p>}
+      >
+        <ApplicationsList />
+      </Suspense>
     </div>
   );
 }

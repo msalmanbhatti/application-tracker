@@ -1,0 +1,1 @@
+The table is about applications and it will store the applications applied. The users can view, add, edit and delete their own applications.
