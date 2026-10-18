@@ -1,2 +1,3 @@
  - The table is about applications and it will store the applications applied. The users can view, add, edit and delete their own applications.
  - Row Level Security (RLS): a rule inside the database that decides which rows each user can see or change. In my app, the rule auth.uid() = user_id means users only get their own applications, even if the code just asks for “all applications.” This keeps data safe even though the API key is public.
+ - Security note: a sneaky user could try to call deleteApplication with someone else’s id. RLS blocks it, because the database only lets you delete rows you own.

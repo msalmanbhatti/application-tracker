@@ -5,6 +5,7 @@ import { addApplication } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { StatusSelect, DeleteButton } from "./application-controls";
 
 type Application = {
   id: string;
@@ -102,9 +103,10 @@ async function ApplicationsList() {
             <p className="font-semibold">{app.company}</p>
             <p className="text-sm text-muted-foreground">{app.role}</p>
           </div>
-          <span className="text-xs rounded-full border px-3 py-1 capitalize">
-            {app.status}
-          </span>
+                    <div className="flex items-center gap-2">
+            <StatusSelect id={app.id} status={app.status} />
+            <DeleteButton id={app.id} company={app.company} />
+          </div>
         </li>
       ))}
     </ul>
