@@ -6,11 +6,9 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-screen flex flex-col items-center">
+    <main className="flex min-h-screen flex-col">
       <SiteHeader />
-      <div className="flex-1 w-full max-w-6xl flex flex-col gap-8 p-5 py-12">
-        {children}
-      </div>
+      <div className="mx-auto w-full max-w-[1248px] flex-1 px-6 py-10">{children}</div>
       <SiteFooter />
     </main>
   );

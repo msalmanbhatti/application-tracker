@@ -9,7 +9,7 @@ export const STATUSES = [
 ] as const;
 
 // Full class names written out, so Tailwind can find them in the code
-const PILL_STYLES: Record<string, string> = {
+export const PILL_STYLES: Record<string, string> = {
   wishlist: "bg-status-wishlist-bg text-status-wishlist",
   applied: "bg-status-applied-bg text-status-applied",
   interview: "bg-status-interview-bg text-status-interview",

@@ -1,39 +1,47 @@
 "use client";
 
 import { useTransition } from "react";
-import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronDown, Trash2 } from "lucide-react";
+import { PILL_STYLES, STATUSES } from "@/components/status-pill";
 import { deleteApplication, updateStatus } from "./actions";
-
-const STATUS_OPTIONS = [
-  { value: "wishlist", label: "Wishlist" },
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-];
 
 export function StatusSelect({ id, status }: { id: string; status: string }) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <select
-      key={status}
-      aria-label="Change status"
-      defaultValue={status}
-      disabled={isPending}
-      onChange={(e) => {
-        const newStatus = e.target.value;
-        startTransition(() => updateStatus(id, newStatus));
-      }}
-      className="h-8 rounded-md border border-input bg-transparent px-2 text-xs disabled:opacity-50"
+    // The wrapper carries the pill colours; the real <select> sits on top, transparent
+    <div
+      className={`relative inline-flex items-center rounded-full ${
+        PILL_STYLES[status] ?? PILL_STYLES.wishlist
+      } ${isPending ? "opacity-50" : ""}`}
     >
-      {STATUS_OPTIONS.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+      <span
+        className="pointer-events-none absolute left-2 h-1.5 w-1.5 rounded-full bg-current"
+        aria-hidden
+      />
+      <select
+        key={status}
+        aria-label="Change status"
+        defaultValue={status}
+        disabled={isPending}
+        onChange={(e) => {
+          const newStatus = e.target.value;
+          startTransition(() => updateStatus(id, newStatus));
+        }}
+        className="cursor-pointer appearance-none rounded-full bg-transparent py-0.5 pl-5 pr-6 text-[11px] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {STATUSES.map((option) => (
+          <option key={option.value} value={option.value} className="bg-card text-foreground">
+            {option.label}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        size={11}
+        className="pointer-events-none absolute right-2"
+        aria-hidden
+      />
+    </div>
   );
 }
 
@@ -41,17 +49,17 @@ export function DeleteButton({ id, company }: { id: string; company: string }) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <Button
-      variant="ghost"
-      size="icon"
+    <button
+      type="button"
       aria-label={`Delete application at ${company}`}
       disabled={isPending}
       onClick={() => {
         if (!window.confirm(`Delete your application at ${company}?`)) return;
         startTransition(() => deleteApplication(id));
       }}
+      className="flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
     >
-      <Trash2 size={16} />
-    </Button>
+      <Trash2 size={14} />
+    </button>
   );
 }
