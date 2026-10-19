@@ -10,6 +10,11 @@ export default {
   ],
   theme: {
     extend: {
+            fontFamily: {
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        display: ["var(--font-instrument)", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "monospace"],
+      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -50,6 +55,23 @@ export default {
           "3": "hsl(var(--chart-3))",
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
+        },
+                lime: {
+          DEFAULT: "#D4F25A",
+          soft: "#EEFBB8",
+          ink: "#3D5400",
+        },
+        status: {
+          wishlist: "#4A4944",
+          "wishlist-bg": "#ECEAE4",
+          applied: "#3550C8",
+          "applied-bg": "#EEF2FF",
+          interview: "#8F5500",
+          "interview-bg": "#FFF4E0",
+          offer: "#1A7046",
+          "offer-bg": "#E8F6EE",
+          rejected: "#B23434",
+          "rejected-bg": "#FDEDED",
         },
       },
       borderRadius: {
