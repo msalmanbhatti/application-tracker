@@ -58,10 +58,16 @@ export function SiteFooter() {
       <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
           <Logo size="sm" />
-          <p className="text-[13px] text-muted-foreground">
-            Built by{" "}
-            <span className="font-medium text-foreground">Salman Bhatti</span>{" "}
-            with Next.js and Supabase
+                  <p className="text-[13px] text-muted-foreground">
+            Designed and built by{" "}
+            <a
+              href="https://salmanportfolio-inky.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-foreground underline-offset-4 hover:underline"
+            >
+              Salman Bhatti
+            </a>
           </p>
         </div>
         <div className="flex items-center gap-5">
