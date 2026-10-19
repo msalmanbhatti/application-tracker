@@ -90,3 +90,17 @@
 - Delete asks for confirmation, because it can't be undone.
 - The header greets users without showing their email, for privacy.
 - The search shows "X of Y applications" so users know cards are hidden, not deleted.
+
+## The redesign (from Figma to code)
+
+- **Design tokens:** colours like `--background`, `--primary` and `--border` are CSS variables in `globals.css`. Every component reads them, so changing a value in one place updates the whole app. They're the code version of my Figma colour styles. The `.dark` block has the same variables with dark values.
+- **Custom colours in Tailwind:** I added `lime` and `status` colours to `tailwind.config.ts`, which gives me classes like `bg-lime` or `text-status-offer`. Tailwind only includes classes it finds written out in full in the code, so I list complete class names instead of building them from pieces.
+- **next/font:** loads Google Fonts at build time and serves them from my own site. Each font becomes a CSS variable (`--font-geist-sans`), and Tailwind turns those into `font-sans`, `font-display` and `font-mono`. Font changes sometimes need a restart of `npm run dev`.
+- **Reusable components with props:** `Logo` takes a `size` prop, so the same component is large in the header and small in the footer. `StatusPill` is used both on the landing page preview and on the real board.
+- **Dialog:** the Add dialog uses the browser's built-in `<dialog>` element. `showModal()` opens it, traps keyboard focus inside and lets Esc close it. `backdrop:` styles the dimmed background.
+- **useRef:** gives me a direct handle on an HTML element, so I can call `.showModal()`, `.close()` or `form.reset()` on it.
+- **useFormStatus:** tells a button whether its form is still submitting, so it can show "Adding…". It only works in a component *inside* the form, which is why SubmitButton is its own component.
+- **Styling a native select:** selects are hard to style, so a wrapper paints the pill colours and the real `<select>` sits on top with a transparent background. It still works with keyboard and screen readers.
+- **Hydration-safe dates:** formatting dates with the user's locale can give different text on the server (Vercel runs in UTC) and in the browser (Berlin), which causes a hydration error. Splitting "2026-10-18" by hand always gives "Oct 18" in both places.
+- **Decorative preview:** the board on the landing page is just a picture of the app, so it uses `role="img"` with one description, and `<span>`s instead of buttons, so keyboard users don't land on fake controls.
+- **Anchor links:** `href="/#features"` scrolls to the element with `id="features"`. `scroll-smooth` on `<html>` makes it glide.

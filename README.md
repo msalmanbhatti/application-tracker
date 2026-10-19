@@ -14,7 +14,8 @@ As a Media Informatics student looking for a mandatory internship, I needed one 
 
 - **Kanban board with drag and drop** (dnd-kit) to move applications between Wishlist, Applied, Interview, Offer and Rejected
 - **Status dropdown on every card** as a keyboard-friendly alternative to dragging
-- **Add, edit and delete applications** with company, role, job link, status, applied date and notes
+- **Add applications in a dialog**, then edit them with notes and an applied date, or delete them
+- **Colour-coded status pills** that double as a dropdown to change the status
 - **Instant search** by company or role
 - **Sign up and log in** with email (Supabase Auth)
 - **Private by default:** each user only sees their own data, enforced in the database with Row Level Security
@@ -43,6 +44,9 @@ As a Media Informatics student looking for a mandatory internship, I needed one 
 - **Validation on the server.** Required fields and status values are checked on the server and by a database constraint, never trusted from the browser alone.
 - **Dynamic routes for editing.** One page (`/protected/applications/[id]`) handles editing for every application. Opening another user's application id shows a 404 page, thanks to Row Level Security.
 - **Privacy in the UI.** The header greets users without showing their email address.
+- **Designed in Figma, then built.** I designed the redesign in Figma (fonts, colour tokens, status colours, components) and implemented it as design tokens in Tailwind, so the code and the design share one system.
+- **Native, accessible dialog.** The "Add application" dialog uses the browser's `<dialog>` element, which traps keyboard focus, closes with Esc and needs no extra library.
+- **Hydration-safe dates.** Dates are formatted by hand instead of with the user's locale, so the server and the browser always render the same text.
 
 ![Landing page](docs/landing.png)
 
@@ -54,12 +58,17 @@ app/
 ├── auth/                             Login, sign-up and password pages
 └── protected/
     ├── layout.tsx                    Frame around the dashboard
-    ├── page.tsx                      Dashboard: add form + Kanban board
-    ├── kanban-board.tsx              Drag-and-drop board and search
+    ├── page.tsx                      Loads the user's applications
+    ├── kanban-board.tsx              Toolbar, search and drag-and-drop board
+    ├── add-application-dialog.tsx    Dialog to add an application
     ├── application-controls.tsx      Status dropdown and delete button
     ├── actions.ts                    Server Actions: add, update, delete
     └── applications/[id]/page.tsx    Edit page
-components/site-layout.tsx            Shared header and footer
+components/
+├── site-layout.tsx                   Shared header, footer and logo
+├── board-preview.tsx                 Example board on the landing page
+├── status-pill.tsx                   Status colours and labels
+└── theme-switcher.tsx                Light/dark toggle
 supabase/schema.sql                   Database table and security policy
 ```
 
