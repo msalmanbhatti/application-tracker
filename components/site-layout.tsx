@@ -68,7 +68,7 @@ export function SiteFooter() {
             >
               Salman Bhatti
             </a>
-          </p>
+          </p>d
         </div>
         <div className="flex items-center gap-5">
           <a
